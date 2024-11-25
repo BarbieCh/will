@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gen Z Multi-App Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    overflow: hidden;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+  }
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    height: 100vh;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+  .app {
+    background-color: #16213e;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+  }
+  .app:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  .app-header {
+    background-color: #0f3460;
+    color: #e94560;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em;
+  }
+  .app-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+  }
+  button {
+    background-color: #e94560;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #c13555;
+  }
+  input[type="text"], input[type="number"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #0f3460;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+  }
+  /* Styles for the new Mindfulness app */
+  #meditation-timer {
+    font-size: 2em;
+    text-align: center;
+    margin: 20px 0;
+  }
+  #breathing-guide {
+    text-align: center;
+    font-size: 1.5em;
+    margin: 20px 0;
+  }
+  /* Styles for the new Skill Share app */
+  #skill-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .skill-item {
+    background-color: #0f3460;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  /* Existing styles for other apps */
+  #habit-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .habit-name {
+    flex-grow: 1;
+  }
+  .habit-streak {
+    margin-right: 10px;
+  }
+  #flashcard {
+    background-color: #0f3460;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  #flashcard-word {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  #flashcard-translation {
+    font-size: 1.2em;
+    color: #e94560;
+    display: none;
+  }
+  #timer-display {
+    font-size: 2em;
+    text-align: center;
+    margin: 20px 0;
+  }
+  #timer-controls {
+    display: flex;
+    justify-content: space-around;
+  }
+  /* New styles for Stop Smoking app */
+  #motivation-quote {
+    margin-top: 15px;
+    font-style: italic;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+  <!-- Existing apps -->
+  <div class="app" id="habit-tracker">
+    <div class="app-header">Habit Tracker</div>
+    <div class="app-content">
+      <input type="text" id="habit-input" placeholder="Add a new habit">
+      <button onclick="addHabit()">Add Habit</button>
+      <ul id="habit-list"></ul>
+    </div>
+  </div>
+  <div class="app" id="todo-app">
+    <div class="app-header">To-Do List</div>
+    <div class="app-content">
+      <input type="text" id="todo-input" placeholder="Add a new task">
+      <button onclick="addTodo()">Add</button>
+      <ul id="todo-list"></ul>
+    </div>
+  </div>
+  <!-- New Mindfulness app replacing TikTok Trends -->
+  <div class="app" id="mindfulness">
+    <div class="app-header">Mindfulness</div>
+    <div class="app-content">
+      <div id="meditation-timer">5:00</div>
+      <button onclick="startMeditation()">Start Meditation</button>
+      <div id="breathing-guide"></div>
+    </div>
+  </div>
+  <div class="app" id="mood-tracker">
+    <div class="app-header">Mood Tracker</div>
+    <div class="app-content">
+      <select id="mood-select">
+        <option value="😊">😊 Happy</option>
+        <option value="😐">😐 Neutral</option>
+        <option value="😔">😔 Sad</option>
+        <option value="😠">😠 Angry</option>
+        <option value="😴">😴 Tired</option>
+      </select>
+      <button onclick="logMood()">Log Mood</button>
+      <div id="mood-history"></div>
+    </div>
+  </div>
+  <div class="app" id="language-learning">
+    <div class="app-header">Language Learning</div>
+    <div class="app-content">
+      <div id="flashcard">
+        <div id="flashcard-word"></div>
+        <div id="flashcard-translation"></div>
+      </div>
+      <button onclick="showTranslation()">Show Translation</button>
+      <button onclick="nextFlashcard()">Next Word</button>
+    </div>
+  </div>
+  <div class="app" id="stop-smoking">
+    <div class="app-header">Stop Smoking</div>
+    <div class="app-content">
+      <button onclick="showMotivationQuote()">Click here if you want to smoke</button>
+      <div id="motivation-quote"></div>
+    </div>
+  </div>
+  <div class="app" id="work-timer">
+    <div class="app-header">Work Timer</div>
+    <div class="app-content">
+      <div id="timer-display">25:00</div>
+      <div id="timer-controls">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
+      <select id="timer-duration" onchange="updateTimerDisplay()">
+        <option value="1500">25 minutes</option>
+        <option value="3000">50 minutes</option>
+        <option value="600">10 minutes (break)</option>
+      </select>
+    </div>
+  </div>
+  <!-- New Skill Share app replacing Social Feed -->
+  <div class="app" id="skill-share">
+    <div class="app-header">Skill Share</div>
+    <div class="app-content">
+      <input type="text" id="skill-input" placeholder="Share a skill you can teach">
+      <button onclick="addSkill()">Share Skill</button>
+      <ul id="skill-list"></ul>
+    </div>
+  </div>
+  <div class="app" id="mental-health">
+    <div class="app-header">Mental Health Check-in</div>
+    <div class="app-content">
+      <textarea id="journal-entry" placeholder="How are you feeling today?"></textarea>
+      <button onclick="saveJournalEntry()">Save Entry</button>
+      <div id="mood-suggestions"></div>
+    </div>
+  </div>
+  <div class="app" id="career-goals">
+    <div class="app-header">Career Goals</div>
+    <div class="app-content">
+      <input type="text" id="goal-input" placeholder="Add a new career goal">
+      <button onclick="addCareerGoal()">Add Goal</button>
+      <ul id="career-goals-list"></ul>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+  // New Mindfulness app functions
+  let meditationTimer;
+  let meditationTimeLeft = 300; // 5 minutes
+  let breathingPhase = 'inhale';
+
+  function startMeditation() {
+    clearInterval(meditationTimer);
+    meditationTimer = setInterval(() => {
+      meditationTimeLeft--;
+      updateMeditationDisplay();
+      updateBreathingGuide();
+      if (meditationTimeLeft === 0) {
+        clearInterval(meditationTimer);
+        alert("Meditation session completed!");
+      }
+    }, 1000);
+  }
+
+  function updateMeditationDisplay() {
+    const minutes = Math.floor(meditationTimeLeft / 60);
+    const seconds = meditationTimeLeft % 60;
+    document.getElementById('meditation-timer').textContent = 
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  function updateBreathingGuide() {
+    const breathingGuide = document.getElementById('breathing-guide');
+    if (meditationTimeLeft % 8 === 0) {
+      breathingPhase = 'inhale';
+      breathingGuide.textContent = 'Inhale...';
+    } else if (meditationTimeLeft % 8 === 4) {
+      breathingPhase = 'exhale';
+      breathingGuide.textContent = 'Exhale...';
+    }
+  }
+
+  // New Skill Share app functions
+  const skills = [];
+
+  function addSkill() {
+    const input = document.getElementById('skill-input');
+    if (input.value.trim() !== '') {
+      skills.push(input.value);
+      input.value = '';
+      renderSkills();
+    }
+  }
+
+  function renderSkills() {
+    const list = document.getElementById('skill-list');
+    list.innerHTML = skills.map(skill => `
+      <li class="skill-item">${skill}</li>
+    `).join('');
+  }
+
+  // Existing app functions
+  const habits = [];
+
+  function addHabit() {
+    const input = document.getElementById('habit-input');
+    if (input.value.trim() !== '') {
+      habits.push({ name: input.value, streak: 0 });
+      input.value = '';
+      renderHabits();
+    }
+  }
+
+  function renderHabits() {
+    const list = document.getElementById('habit-list');
+    list.innerHTML = habits.map((habit, index) => `
+      <li class="habit-item">
+        <span class="habit-name">${habit.name}</span>
+        <span class="habit-streak">🔥 ${habit.streak}</span>
+        <button onclick="incrementStreak(${index})">✅</button>
+        <button onclick="resetStreak(${index})">🔄</button>
+      </li>
+    `).join('');
+  }
+
+  function incrementStreak(index) {
+    habits[index].streak++;
+    renderHabits();
+  }
+
+  function resetStreak(index) {
+    habits[index].streak = 0;
+    renderHabits();
+  }
+
+  const flashcards = [
+    { word: "Bonjour", translation: "Hello" },
+    { word: "Merci", translation: "Thank you" },
+    { word: "Au revoir", translation: "Goodbye" },
+    { word: "S'il vous plaît", translation: "Please" },
+    { word: "Comment allez-vous?", translation: "How are you?" },
+    { word: "Je m'appelle", translation: "My name is" },
+    { word: "Enchanté(e)", translation: "Nice to meet you" },
+    { word: "Oui", translation: "Yes" },
+    { word: "Non", translation: "No" },
+    { word: "Excusez-moi", translation: "Excuse me" }
+  ];
+
+  let currentFlashcardIndex = 0;
+
+  function showFlashcard() {
+    const flashcard = flashcards[currentFlashcardIndex];
+    document.getElementById('flashcard-word').textContent = flashcard.word;
+    document.getElementById('flashcard-translation').textContent = flashcard.translation;
+    document.getElementById('flashcard-translation').style.display = 'none';
+  }
+
+  function showTranslation() {
+    document.getElementById('flashcard-translation').style.display = 'block';
+  }
+
+  function nextFlashcard() {
+    currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcards.length;
+    showFlashcard();
+  }
+
+  // Initialize the flashcard
+  showFlashcard();
+
+  function addTodo() {
+    const input = document.getElementById('todo-input');
+    const list = document.getElementById('todo-list');
+    if (input.value.trim() !== '') {
+      const li = document.createElement('li');
+      li.textContent = input.value;
+      list.appendChild(li);
+      input.value = '';
+    }
+  }
+
+  function logMood() {
+    const mood = document.getElementById('mood-select').value;
+    const history = document.getElementById('mood-history');
+    const date = new Date().toLocaleDateString();
+    history.innerHTML = `${date}: ${mood}<br>` + history.innerHTML;
+  }
+
+  // New Stop Smoking function
+  function showMotivationQuote() {
+    const quotes = [
+      "Every time you resist a craving, you're one step closer to being smoke-free.",
+      "Your lungs are already thanking you for considering quitting.",
+      "You're stronger than the urge
+to smoke.",
+      "Imagine a life free from the chains of addiction - you're on your way there!",
+      "Your health is improving with every cigarette you don't smoke.",
+      "You've got the power to break free from smoking. Believe in yourself!",
+      "Think of all the money you'll save by not buying cigarettes.",
+      "Your future smoke-free self is cheering you on right now.",
+      "Remember why you started this journey. You've got this!",
+      "Each day without smoking is a victory. Celebrate your progress!"
+    ];
+    const quoteElement = document.getElementById('motivation-quote');
+    quoteElement.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+  }
+
+  // Work Timer functions
+  let workTimer;
+  let workTimeLeft = 1500; // 25 minutes by default
+
+  function startTimer() {
+    clearInterval(workTimer);
+    workTimer = setInterval(() => {
+      workTimeLeft--;
+      updateTimerDisplay();
+      if (workTimeLeft === 0) {
+        clearInterval(workTimer);
+        alert("Time's up!");
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    clearInterval(workTimer);
+  }
+
+  function resetTimer() {
+    clearInterval(workTimer);
+    workTimeLeft = parseInt(document.getElementById('timer-duration').value);
+    updateTimerDisplay();
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(workTimeLeft / 60);
+    const seconds = workTimeLeft % 60;
+    document.getElementById('timer-display').textContent = 
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  function saveJournalEntry() {
+    const entry = document.getElementById('journal-entry').value;
+    // In a real app, you'd save this entry securely
+    document.getElementById('mood-suggestions').innerHTML = "Thanks for sharing. Remember to take care of yourself!";
+    document.getElementById('journal-entry').value = '';
+  }
+
+  function addCareerGoal() {
+    const input = document.getElementById('goal-input');
+    const list = document.getElementById('career-goals-list');
+    if (input.value.trim() !== '') {
+      const li = document.createElement('li');
+      li.textContent = input.value;
+      list.appendChild(li);
+      input.value = '';
+    }
+  }
+</script>
+</body>
+</html>
+
