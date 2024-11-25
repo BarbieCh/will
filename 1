@@ -18,7 +18,7 @@
   }
   .dashboard {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
     gap: 15px;
     height: 100vh;
@@ -72,7 +72,6 @@
     background-color: #1a1a2e;
     color: #e0e0e0;
   }
-  /* Styles for the new Mindfulness app */
   #meditation-timer {
     font-size: 2em;
     text-align: center;
@@ -83,18 +82,6 @@
     font-size: 1.5em;
     margin: 20px 0;
   }
-  /* Styles for the new Skill Share app */
-  #skill-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  .skill-item {
-    background-color: #0f3460;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  /* Existing styles for other apps */
   #habit-list {
     list-style-type: none;
     padding: 0;
@@ -136,7 +123,6 @@
     display: flex;
     justify-content: space-around;
   }
-  /* New styles for Stop Smoking app */
   #motivation-quote {
     margin-top: 15px;
     font-style: italic;
@@ -146,7 +132,6 @@
 </head>
 <body>
 <div class="dashboard">
-  <!-- Existing apps -->
   <div class="app" id="habit-tracker">
     <div class="app-header">Habit Tracker</div>
     <div class="app-content">
@@ -163,7 +148,6 @@
       <ul id="todo-list"></ul>
     </div>
   </div>
-  <!-- New Mindfulness app replacing TikTok Trends -->
   <div class="app" id="mindfulness">
     <div class="app-header">Mindfulness</div>
     <div class="app-content">
@@ -220,15 +204,6 @@
       </select>
     </div>
   </div>
-  <!-- New Skill Share app replacing Social Feed -->
-  <div class="app" id="skill-share">
-    <div class="app-header">Skill Share</div>
-    <div class="app-content">
-      <input type="text" id="skill-input" placeholder="Share a skill you can teach">
-      <button onclick="addSkill()">Share Skill</button>
-      <ul id="skill-list"></ul>
-    </div>
-  </div>
   <div class="app" id="mental-health">
     <div class="app-header">Mental Health Check-in</div>
     <div class="app-content">
@@ -237,21 +212,12 @@
       <div id="mood-suggestions"></div>
     </div>
   </div>
-  <div class="app" id="career-goals">
-    <div class="app-header">Career Goals</div>
-    <div class="app-content">
-      <input type="text" id="goal-input" placeholder="Add a new career goal">
-      <button onclick="addCareerGoal()">Add Goal</button>
-      <ul id="career-goals-list"></ul>
-    </div>
-  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
-  // New Mindfulness app functions
   let meditationTimer;
-  let meditationTimeLeft = 300; // 5 minutes
+  let meditationTimeLeft = 300;
   let breathingPhase = 'inhale';
 
   function startMeditation() {
@@ -285,26 +251,6 @@
     }
   }
 
-  // New Skill Share app functions
-  const skills = [];
-
-  function addSkill() {
-    const input = document.getElementById('skill-input');
-    if (input.value.trim() !== '') {
-      skills.push(input.value);
-      input.value = '';
-      renderSkills();
-    }
-  }
-
-  function renderSkills() {
-    const list = document.getElementById('skill-list');
-    list.innerHTML = skills.map(skill => `
-      <li class="skill-item">${skill}</li>
-    `).join('');
-  }
-
-  // Existing app functions
   const habits = [];
 
   function addHabit() {
@@ -339,16 +285,16 @@
   }
 
   const flashcards = [
-    { word: "Bonjour", translation: "Hello" },
-    { word: "Merci", translation: "Thank you" },
-    { word: "Au revoir", translation: "Goodbye" },
-    { word: "S'il vous plaît", translation: "Please" },
-    { word: "Comment allez-vous?", translation: "How are you?" },
-    { word: "Je m'appelle", translation: "My name is" },
-    { word: "Enchanté(e)", translation: "Nice to meet you" },
-    { word: "Oui", translation: "Yes" },
-    { word: "Non", translation: "No" },
-    { word: "Excusez-moi", translation: "Excuse me" }
+    { word: "你好", translation: "Hello" },
+    { word: "谢谢", translation: "Thank you" },
+    { word: "再见", translation: "Goodbye" },
+    { word: "请", translation: "Please" },
+    { word: "你好吗？", translation: "How are you?" },
+    { word: "我叫", translation: "My name is" },
+    { word: "很高兴认识你", translation: "Nice to meet you" },
+    { word: "是", translation: "Yes" },
+    { word: "不是", translation: "No" },
+    { word: "对不起", translation: "Excuse me" }
   ];
 
   let currentFlashcardIndex = 0;
@@ -369,7 +315,6 @@
     showFlashcard();
   }
 
-  // Initialize the flashcard
   showFlashcard();
 
   function addTodo() {
@@ -390,13 +335,11 @@
     history.innerHTML = `${date}: ${mood}<br>` + history.innerHTML;
   }
 
-  // New Stop Smoking function
   function showMotivationQuote() {
     const quotes = [
       "Every time you resist a craving, you're one step closer to being smoke-free.",
       "Your lungs are already thanking you for considering quitting.",
-      "You're stronger than the urge
-to smoke.",
+      "You're stronger than the urge to smoke.",
       "Imagine a life free from the chains of addiction - you're on your way there!",
       "Your health is improving with every cigarette you don't smoke.",
       "You've got the power to break free from smoking. Believe in yourself!",
@@ -409,16 +352,16 @@ to smoke.",
     quoteElement.textContent = quotes[Math.floor(Math.random() * quotes.length)];
   }
 
-  // Work Timer functions
   let workTimer;
-  let workTimeLeft = 1500; // 25 minutes by default
+  let workTimeLeft = 1500;
 
   function startTimer() {
     clearInterval(workTimer);
     workTimer = setInterval(() => {
       workTimeLeft--;
       updateTimerDisplay();
-      if (workTimeLeft === 0) {
+      if (workTimeLeft ===
+0) {
         clearInterval(workTimer);
         alert("Time's up!");
       }
@@ -444,20 +387,8 @@ to smoke.",
 
   function saveJournalEntry() {
     const entry = document.getElementById('journal-entry').value;
-    // In a real app, you'd save this entry securely
     document.getElementById('mood-suggestions').innerHTML = "Thanks for sharing. Remember to take care of yourself!";
     document.getElementById('journal-entry').value = '';
-  }
-
-  function addCareerGoal() {
-    const input = document.getElementById('goal-input');
-    const list = document.getElementById('career-goals-list');
-    if (input.value.trim() !== '') {
-      const li = document.createElement('li');
-      li.textContent = input.value;
-      list.appendChild(li);
-      input.value = '';
-    }
   }
 </script>
 </body>
